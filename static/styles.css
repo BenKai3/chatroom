@@ -18,4 +18,8 @@ input {
 }
 .disconnect {
 	text-align: center;
+	cursor: pointer;
+}
+.me {
+	color: black;
 }
