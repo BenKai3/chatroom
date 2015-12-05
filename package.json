@@ -1,0 +1,14 @@
+{
+  "name": "survey_sockets",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ejs": "^2.3.4",
+    "express": "^4.13.3",
+    "path": "^0.12.7",
+    "socket.io": "^1.3.7"
+  }
+}

@@ -1,0 +1,93 @@
+<style type="text/css" media="screen">
+	* {
+		font-family: sans-serif;
+		color: white;
+	}
+	body {
+			background: linear-gradient(white, turquoise); /* Standard syntax */
+	}
+	input {
+		color: black;
+	}
+	.box {
+		background-color: gray;
+		width: 50%;
+		padding: 1% 3% 3% 3%;
+		margin: 1% auto;
+		opacity: .5;
+		border-bottom: 1px solid black;
+	}
+	.disconnect {
+		text-align: center;
+		cursor: pointer;
+	}
+	.me {
+		color: black;
+	}
+</style>
+<!-- <link rel="stylesheet" type="text/css" href="styles.css"> -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+<script type ="text/javascript">
+var my_name;
+var my_member_id;
+    $(document).ready(function (){
+        // this triggers the connection event in our server!
+        var socket = io.connect();
+        // we'll write all the socket stuff after the above line!
+        $('.members, .disconnect').hide();
+
+        $('[name=submit]').click(function (){
+        	my_name = $('[name=name]').val();
+			socket.emit("new_member",{ name: my_name });
+		});
+		
+		socket.on('added_member', function(data){
+
+
+			my_member_id = data.member.id;
+
+			$('.prompt').fadeOut(function(){
+				$('.members, .disconnect').fadeIn();
+			});
+			$('.me').html(my_name);
+
+			if ($('.members h2').length) {
+				$('.members').append('<h2 class="box">'+data.member.name+'</h2>');
+			} else {
+				for (var i = 0; i < data.members.length; i++) {
+					$('.members').append('<h2 class="box">'+data['members'][i]['name']+'</h2>');
+				};
+			};
+
+		});
+
+		$('.disconnect').click(function(){
+			socket.emit('remove_member', { name: my_name, id: my_member_id });
+			$('.members, .disconnect').fadeOut(function(){
+				$('.prompt').fadeIn();
+			});
+		});
+
+		socket.on('removed_member', function(data){
+			$('.members h2').each(function(){
+				if ($(this).text() == data.name) {
+					$(this).remove();
+				}
+			});
+		});
+    });
+</script>
+<div class="box prompt">
+	<h1>Please enter your name to join the members section.</h1>
+	<input type="text" name="name" value="">
+	<input type="button" name="submit" value="Submit">
+	<input type="button" name="cancel" value="Cancel">
+</div>
+<div class="box members">
+	<h1>Hello, <span class="me"></span>!</h1>
+	<h1>The Members:</h1>
+</div>
+<div class="box disconnect">
+	<h1>Leave Members Area</h1>
+</div>
