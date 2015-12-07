@@ -4,6 +4,7 @@ var path = require("path");
 var app = express();
 
 var members = [];
+var conversation = [{ name: 'jorge', text: 'hey hey hey, i like chatting'},{name: 'henry', text: 'oh man, what a coincidence, I like chatting too'},{name: 'j4ne', text: 'Im Jane.'}];
 
 function createMemberId(){
 	return Math.random();
@@ -38,7 +39,7 @@ io.sockets.on('connection', function (socket) {
 		member.name = data.name;
 		member.id = createMemberId();
 		members.push(member);
-		io.emit("added_member",{member: member, members: members });
+		io.emit("added_member",{member: member, members: members, conversation: conversation });
 	});
 	socket.on('remove_member', function(data){
 		for (var i = 0; i < members.length; i++) {

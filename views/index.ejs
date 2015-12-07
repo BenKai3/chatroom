@@ -4,24 +4,26 @@
 <script type ="text/javascript">
 var my_name;
 var my_member_id;
+var conversation;
     $(document).ready(function (){
         // this triggers the connection event in our server!
         var socket = io.connect();
         // we'll write all the socket stuff after the above line!
-        $('.members, .disconnect').hide();
+        $('.members, .disconnect, .conversation, .message-box').hide();
 
         $('[name=submit]').click(function (){
         	my_name = $('[name=name]').val();
 			socket.emit("new_member",{ name: my_name });
 		});
-		
+//MEMBERS
 		socket.on('added_member', function(data){
 
 
 			my_member_id = data.member.id;
+			conversation = data.conversation;
 
 			$('.prompt').fadeOut(function(){
-				$('.members, .disconnect').fadeIn();
+				$('.members, .disconnect, .conversation').fadeIn();
 			});
 			$('.me').html(my_name);
 
@@ -30,11 +32,8 @@ var my_member_id;
 			} else {
 				for (var i = 0; i < data.members.length; i++) {
 					$('.members').append('<h2 class="box">'+data['members'][i]['name']+'</h2>');
-				};
-			};
-
-		});
-
+				}
+			}
 		$('.disconnect').click(function(){
 			socket.emit('remove_member', { name: my_name, id: my_member_id });
 			$('.members, .disconnect').fadeOut(function(){
@@ -49,6 +48,15 @@ var my_member_id;
 				}
 			});
 		});
+//CONVERSATION
+			if ($('.conversation p').length) {
+				$('.conversation').append('<p class="box">'+data.member.name+'</p>');
+			} else {
+				for (var i = 0; i < data.conversation.length; i++) {
+					$('.conversation').append('<p class="box"><b>'+data['conversation'][i]['name']+': </b>'+data['conversation'][i]['text']+'</p>');
+				}
+			}
+		});
     });
 </script>
 <div class="box prompt">
@@ -60,6 +68,13 @@ var my_member_id;
 <div class="box members">
 	<h1>Hello, <span class="me"></span>!</h1>
 	<h1>Online Members:</h1>
+</div>
+<div class="box conversation">
+	
+</div>
+<div class="box message-box">
+	<input type="text" name="message" value="">
+	<p class="message-send">Send</p>
 </div>
 <div class="box disconnect">
 	<h1>Leave Members Area</h1>

@@ -23,3 +23,18 @@ input {
 .me {
 	color: black;
 }
+.conversation {
+	overflow: scroll;
+	height: 400px;
+}
+/*.message-box {
+	min-height: 100px;
+}
+.message-box p {
+	width: 25%;
+	display: inline-block;
+}
+.message-box input {
+	width: 70%;
+	display: inline-block;
+}*/
